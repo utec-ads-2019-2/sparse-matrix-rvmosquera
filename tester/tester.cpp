@@ -27,7 +27,7 @@ void Tester::testMatrix(unsigned int rows, unsigned int columns) {
 
     int **matrix2 = buildMatrix<T>(rows, columns);
     Matrix<T> test2 = setMatrix<T>(matrix2, rows, columns);
-    result = test1 + test2;
+    result = test1 + test2; //call copy constructor?
     for (int i = 0; i < rows; ++i) {
         for (int j = 0; j < columns; ++j) {
             ASSERT(result(i, j) == matrix1[i][j] + matrix2[i][j], "There is a problem with the addition");
@@ -60,6 +60,7 @@ Matrix<T> Tester::setMatrix(T **&matrix, unsigned int rows, unsigned int columns
     for (int i = 0; i < rows; ++i) {
         for (int j = 0; j < columns; ++j) {
             result.set(i, j, matrix[i][j]);
+            //cout << i << " " << j << " " << matrix[i][j] << endl;
             ASSERT(result(i, j) == matrix[i][j], "There is a problem with the set or operator()");
         }
     }
