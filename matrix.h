@@ -23,7 +23,7 @@ private:
 
         for (pointer = &row_link[x]; *pointer != NULL; pointer = &(*pointer)->down) {
             if (y == (*pointer)->posY) {
-                *pointer = (*pointer)->down;
+                //*pointer = (*pointer)->down;
                 resultBool = true;
                 break;
             } else if (y < (*pointer)->posY) {
@@ -39,9 +39,8 @@ private:
         bool resultBool = false;
 
         for (pointer = &col_link[y]; *pointer != NULL; pointer = &(*pointer)->next) {
-            //if((*lpp)->data == data) {
             if (x == (*pointer)->posX) {
-                *pointer = (*pointer)->next;
+                //*pointer = (*pointer)->next;
                 resultBool = true;
                 break;
             } else if (x < (*pointer)->posX) {
@@ -76,64 +75,73 @@ public:
 
         for(int i=0 ; i < this->rows ; ++i) {
             for(int j=0 ; j < this->columns ; ++j) {
-                set(i, j, oldMatrix(i, j) );
+                auto value = oldMatrix(i, j);
+                if (!value)
+                    continue;
+
+                set(i, j, value );
             }
         }
     }
 
     void set(unsigned x, unsigned y, T data) {
-        auto newNode = new Node<T>();
-
-        newNode->data = data;
-        newNode->posX = x;
-        newNode->posY = y;
-
         Node<T> **doublePointerX = nullptr;
         Node<T> **doublePointerY = nullptr;
 
-        whichPosInCol(x, y, doublePointerY);
-        whichPosInRow(x, y, doublePointerX);
+        auto resultY = whichPosInCol(x, y, doublePointerY);
+        auto resultX = whichPosInRow(x, y, doublePointerX);
 
-        newNode->down = *doublePointerY;
-        *doublePointerY = newNode;
+        if(!resultY) {
 
-        newNode->next = *doublePointerX;
-        *doublePointerX = newNode;
+            if(!data) { //No node creation for 0 value
+                return;
+            }
+
+            auto newNode = new Node<T>();
+
+            newNode->data = data;
+            newNode->posX = x;
+            newNode->posY = y;
+
+            newNode->down = *doublePointerY;
+            *doublePointerY = newNode;
+
+            newNode->next = *doublePointerX;
+            *doublePointerX = newNode;
+        } else {
+            if(data) {
+                /*auto newNode = new Node<T>();
+
+                newNode->data = data;
+                newNode->posX = x;
+                newNode->posY = y;
+
+                newNode->down = *doublePointerY;
+                *doublePointerY = newNode;
+
+                newNode->next = *doublePointerX;
+                *doublePointerX = newNode;*/
+                (*doublePointerY)->data = data;
+                (*doublePointerX)->data = data;
+            } else { //instead of set the node with 0, delete it
+                *doublePointerY = (*doublePointerY)->down;
+                *doublePointerX = (*doublePointerX)->next;
+            }
+        }
     }
 
     T operator()(unsigned x, unsigned y) const {
 
         return getElementByRowCol(x, y);
-        /*auto auxCol = row_link[x];
-
-        if (!y && auxCol)
-            return auxCol->data;
-
-        if(!auxCol)
-            return 0;
-
-        auto downAux = auxCol->down;
-
-        while (downAux) {
-            if (downAux->posY == y)
-                return downAux->data;
-
-            downAux = downAux->down;
-        }
-
-        return 0;*/
     }
 
     T getElementByRowCol(unsigned x, unsigned y) const {
         auto auxCol = row_link[x];
 
-        if (!y && auxCol)
-            return auxCol->data;
-
         if(!auxCol)
             return 0;
 
-        auto downAux = auxCol->down;
+        auto downAux = auxCol;
 
         while (downAux) {
             if (downAux->posY == y)
@@ -160,7 +168,7 @@ public:
         return result;
     }
 
-    Matrix<T> operator+(Matrix<T> other) const {
+    Matrix<T> operator+(Matrix<T> other)  const{
         Matrix<T> result(this->rows, this->columns);
 
         if(this->rows != other.rows || this->columns != other.columns) {
@@ -181,7 +189,7 @@ public:
             }
         }
 
-        return result;
+        return result; //not calling copy constructor
     }
 
     Matrix<T> operator-(Matrix<T> other) const {
@@ -195,7 +203,7 @@ public:
         return result;
     }
 
-    Matrix<T> operator*(Matrix<T> other) const {
+    Matrix<T> operator*(const Matrix<T> other) const {
         Matrix<T> result(this->rows, other.columns);
 
         if(this->columns != other.rows) {
@@ -203,21 +211,32 @@ public:
             throw runtime_error(msg);
         }
 
-        for (int i=0;i<this->rows;++i) {
-            for (int j=0;j<this->columns;++j) {
+        for (int i=0;i< result.rows;++i) {
+            for (int j=0;j< result.columns;++j) {
                 T aux = 0;
-                for (int k=0;k<this->columns;k++) {
-                    auto fact1 = getElementByRowCol(i, k);
-                    auto fact2 = other(k, j);
-                    aux = aux +  fact1 * fact2;
-                }
+                for (int k=0;k<this->columns;k++)
+                    aux = aux +  getElementByRowCol(i, k) * other(k, j);
+
                 result.set(i, j, aux);
             }
         }
 
-
         return result;
     }
+
+/*    Matrix<T>& operator=(const Matrix<T> &rhs) {  // overload assignment operator
+        if (this != &rhs) {                  // do not copy to yourself
+            if (data!=NULL)
+                delete [] data;    // free up memory if needed
+            if (rhs.data != NULL) {            // copy string from rhs if it exists
+                data = new char[strlen(rhs.data)+1];
+                strcpy(data,rhs.data);
+            } else
+                data = NULL;
+        }
+
+        return *this;                        // always end with this line
+    }*/
 
     Matrix<T> transpose() const {
         Matrix<T> result(this->columns, this->rows);

@@ -3,8 +3,8 @@
 #include "tester/tester.h"
 
 int main() {
-    //Tester::execute();
-    auto test = new Matrix<int>(7, 7);
+    Tester::execute();
+    /*auto test = new Matrix<int>(7, 7);
 
     test->set(1, 0, 7);
     test->set(2, 0, 10);
@@ -23,7 +23,14 @@ int main() {
 
     cout << "Original Matrix"<<endl;
     test->print();
-    cout << "Traspose Matrix"<<endl;
+    cout << "after update node 5,5 with 189"<<endl;
+    test->set(5, 5, 189);
+    test->print();
+    cout << "after set node 5,5 with 0"<<endl;
+    test->set(5, 5, 0);
+    test->print();
+
+    cout << "Transpose Matrix"<<endl;
     auto resMatrix = test->transpose();
     resMatrix.print();
 
@@ -31,7 +38,7 @@ int main() {
     cout << "Mult result"<<endl;
     resMult.print();
 
-    delete test;
+    delete test;*/
 
     return EXIT_SUCCESS;
 }

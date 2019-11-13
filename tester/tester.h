@@ -40,6 +40,7 @@ class Tester {
 
     public:
         static void execute();
+        static void customMatrixMult();
 };
 
 #endif
