@@ -3,7 +3,8 @@
 #include "tester/tester.h"
 
 int main() {
-    Tester::execute();
+    //Tester::execute();
+    Tester::customMatrixMult();
     /*auto test = new Matrix<int>(7, 7);
 
     test->set(1, 0, 7);

@@ -53,8 +53,14 @@ private:
     }
 
     void initializeRowsandCols(unsigned rows, unsigned columns) {
+        if (row_link.size() > 0)
+            row_link.clear();
+
         for (int i = 0; i < rows; ++i)
             row_link.push_back(nullptr);
+
+        if(col_link.size() > 0)
+            col_link.clear();
 
         for (int i = 0; i < columns; ++i)
             col_link.push_back(nullptr);
@@ -224,19 +230,28 @@ public:
         return result;
     }
 
-/*    Matrix<T>& operator=(const Matrix<T> &rhs) {  // overload assignment operator
+    Matrix<T>& operator=(const Matrix<T> &rhs) {
         if (this != &rhs) {                  // do not copy to yourself
-            if (data!=NULL)
-                delete [] data;    // free up memory if needed
-            if (rhs.data != NULL) {            // copy string from rhs if it exists
-                data = new char[strlen(rhs.data)+1];
-                strcpy(data,rhs.data);
-            } else
-                data = NULL;
+            if (rhs.rows > 0) {            // copy string from rhs if it exists
+
+                this->rows = rhs.rows;
+                this->columns = rhs.columns;
+
+                initializeRowsandCols(this->rows, this->columns);
+
+                for(int i=0 ; i < this->rows ; ++i) {
+                    for(int j=0 ; j < this->columns ; ++j) {
+                        auto value = rhs(i, j);
+                        if (!value)
+                            continue;
+                        set(i, j, value );
+                    }
+                }
+            }
         }
 
         return *this;                        // always end with this line
-    }*/
+    }
 
     Matrix<T> transpose() const {
         Matrix<T> result(this->columns, this->rows);

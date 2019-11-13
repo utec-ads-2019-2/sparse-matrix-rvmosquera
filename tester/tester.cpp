@@ -67,19 +67,19 @@ void Tester::testMatrix(unsigned int rows, unsigned int columns) {
 
     int **matrix2 = buildMatrix<T>(rows, columns);
     Matrix<T> test2 = setMatrix<T>(matrix2, rows, columns);
-    //result = test1 + test2; //call copy constructor
-    Matrix<T> result2 = test1 + test2; //calling copy constructor. Avoid override = operator
+    result = test1 + test2; //call copy constructor
+    //Matrix<T> result2 = test1 + test2; //calling copy constructor. Avoid override = operator
     for (int i = 0; i < rows; ++i) {
         for (int j = 0; j < columns; ++j) {
-            ASSERT(result2(i, j) == matrix1[i][j] + matrix2[i][j], "There is a problem with the addition");
+            ASSERT(result(i, j) == matrix1[i][j] + matrix2[i][j], "There is a problem with the addition");
         }
     }
 
-    //result = test1 - test2
-    Matrix<T> result3 = test1 - test2; //calling copy constructor. Avoid override = operator
+    result = test1 - test2; //calling copy constructor
+    //Matrix<T> result3 = test1 - test2; //calling copy constructor. Avoid override = operator
     for (int i = 0; i < rows; ++i) {
         for (int j = 0; j < columns; ++j) {
-            ASSERT(result3(i, j) == matrix1[i][j] - matrix2[i][j], "There is a problem with the subtraction");
+            ASSERT(result(i, j) == matrix1[i][j] - matrix2[i][j], "There is a problem with the subtraction");
         }
     }
 }
