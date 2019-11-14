@@ -206,6 +206,19 @@ public:
             throw runtime_error(msg);
         }
 
+        for (auto auxRow: row_link) {
+            if (!auxRow)
+                continue;
+
+            while (auxRow) {
+                result.set(
+                        auxRow->posX,
+                        auxRow->posY,
+                        auxRow->data - other(auxRow->posX, auxRow->posY) );
+                auxRow = auxRow->down;
+            }
+        }
+
         return result;
     }
 
