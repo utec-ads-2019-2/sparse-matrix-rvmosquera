@@ -91,6 +91,7 @@ public:
     }
 
     void set(unsigned x, unsigned y, T data) {
+        // No estás borrando con 0, solo ignorando
         Node<T> **doublePointerX = nullptr;
         Node<T> **doublePointerY = nullptr;
 
@@ -158,6 +159,9 @@ public:
 
         return 0;
     }
+
+    // Utilizar los métodos de la matriz en vez de manejarte con los punteros, tiene un impacto en el performance
+
     Matrix<T> operator*(T scalar) const {
         Matrix<T> result(this->rows, this->columns);
 
